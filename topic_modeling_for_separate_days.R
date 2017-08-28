@@ -6,7 +6,7 @@ rm(list=ls())
 # path <- "~/Dropbox/GuoMaWang/Stocks_and_regime_support"
 pkg <- c("foreign", "tm", "stm", "topicmodels", 
          "jiebaR", "ggplot2", "dplyr", "stringr", 
-         "reshape2", "data.table", "slam")
+         "reshape2", "data.table", "slam", "wordcloud")
 lapply(pkg, require, character.only = TRUE)
 
 # setwd(paste0(path, "/Text_analysis"))
@@ -61,29 +61,29 @@ lapply(pkg, require, character.only = TRUE)
 
 
 # load corpora
-obtain_content <- function(x){
-  load(x)
-  cps <- corpus
-  cps <- tm_map(cps, removeNumbers)
-  content <- cps[[1]]$content
-  return(content)
-}
+# obtain_content <- function(x){
+#   load(x)
+#   cps <- corpus
+#   cps <- tm_map(cps, removeNumbers)
+#   content <- cps[[1]]$content
+#   return(content)
+# }
 
-corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
-  "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
-
-content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
-
-corpus_0626_0704 <- Corpus(VectorSource(content_0626_0704))
-
-dtm <- DocumentTermMatrix(corpus_0626_0704, control = list(weighting = weightTf, language = "cn", bounds = list(global = c(5,Inf))))
-term_tfidf <- tapply(dtm$v/row_sums(dtm)[dtm$i], dtm$j, mean) * log2(nDocs(dtm)/col_sums(dtm > 0))
-summary(term_tfidf)
-
-hist(term_tfidf, breaks = 200)
-dtm <- dtm[, term_tfidf > quantile(term_tfidf, probs = 0.75)]
-
-save(dtm, file = "dtm_0626_0704.RData")
+# corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
+#   "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
+# 
+# content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
+# 
+# corpus_0626_0704 <- Corpus(VectorSource(content_0626_0704))
+# 
+# dtm <- DocumentTermMatrix(corpus_0626_0704, control = list(weighting = weightTf, language = "cn", bounds = list(global = c(5,Inf))))
+# term_tfidf <- tapply(dtm$v/row_sums(dtm)[dtm$i], dtm$j, mean) * log2(nDocs(dtm)/col_sums(dtm > 0))
+# summary(term_tfidf)
+# 
+# hist(term_tfidf, breaks = 200)
+# dtm <- dtm[, term_tfidf > quantile(term_tfidf, probs = 0.75)]
+# 
+# save(dtm, file = "dtm_0626_0704.RData")
 
 # remove stop words
 # conn <- file("stopwords.txt",open="r")
@@ -108,32 +108,45 @@ save(dtm, file = "dtm_0626_0704.RData")
 # corpus <- Corpus(VectorSource(document))
 # dtm <- DocumentTermMatrix(corpus, control = list(weighting = weightTfIdf, language = "cn", bounds = list(global = c(2,Inf))))
 
+setwd("/scratch/qg251/webscraping_guba")
+load("dtm_0626_0704.RData")
+
 # run topic model, set number of topics 30
-control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
-lda30 <- list(Gibbs = LDA(dtm, 30, method = "Gibbs", control = control))
-save(lda30, file = "lda30.0626.0704.RData")
+# control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
+# lda30 <- list(Gibbs = LDA(dtm, 30, method = "Gibbs", control = control))
+# save(lda30, file = "lda30.0626.0704.RData")
 
 # load("lda30.0626.0704.RData")
 
-topics30 <- get_terms(lda30[["Gibbs"]], 50)
-write.csv(topics30, file = "topic30_0626_0704.csv")
-
-topic_proportion_30 <- lda30[["Gibbs"]]@gamma
-write.csv(topic_proportion_30, file = "topic_proportion30_0626_0704.csv")
+# topics30 <- get_terms(lda30[["Gibbs"]], 50)
+# write.csv(topics30, file = "topic30_0626_0704.csv")
+# 
+# topic_proportion_30 <- lda30[["Gibbs"]]@gamma
+# write.csv(topic_proportion_30, file = "topic_proportion30_0626_0704.csv")
 
 
 # run topic model, set number of topics 50
+# control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
+# lda50 <- list(Gibbs = LDA(dtm, 50, method = "Gibbs", control = control))
+# save(lda50, file = "lda50.0626.0704.RData")
+# 
+# topics50 <- get_terms(lda50[["Gibbs"]], 50)
+# write.csv(topics50, file = "topic50_0626_0704.csv")
+# 
+# topic_proportion_50 <- lda50[["Gibbs"]]@gamma
+# write.csv(topic_proportion_50, file = "topic_proportion50_0626_0704.csv")
+
+
+# run topic model, set number of topics 100
 control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
-lda50 <- list(Gibbs = LDA(dtm, 50, method = "Gibbs", control = control))
-save(lda50, file = "lda50.0626.0704.RData")
+lda50 <- list(Gibbs = LDA(dtm, 100, method = "Gibbs", control = control))
+save(lda100, file = "lda100.0626.0704.RData")
 
-topics50 <- get_terms(lda50[["Gibbs"]], 50)
-write.csv(topics50, file = "topic50_0626_0704.csv")
+topics100 <- get_terms(lda100[["Gibbs"]], 50)
+write.csv(topics100, file = "topic100_0626_0704.csv")
 
-topic_proportion_50 <- lda50[["Gibbs"]]@gamma
-write.csv(topic_proportion_50, file = "topic_proportion50_0626_0704.csv")
-
-
+topic_proportion_100 <- lda100[["Gibbs"]]@gamma
+write.csv(topic_proportion_100, file = "topic_proportion100_0626_0704.csv")
 
 
 # wordclould for all these days
