@@ -11,6 +11,6 @@
 module purge
 module load r/intel/3.3.2
 
-cd /scratch/qg251/webscraping_guba
+cd /scratch/qg251/webscraping_guba/text_analysis
 
 srun R CMD BATCH topic_modeling_for_separate_days.R > topic_modeling_for_separate_days.out 2>&1
