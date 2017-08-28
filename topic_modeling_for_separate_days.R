@@ -139,7 +139,7 @@ load("dtm_0626_0704.RData")
 
 # run topic model, set number of topics 100
 control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
-lda50 <- list(Gibbs = LDA(dtm, 100, method = "Gibbs", control = control))
+lda100 <- list(Gibbs = LDA(dtm, 100, method = "Gibbs", control = control))
 save(lda100, file = "lda100.0626.0704.RData")
 
 topics100 <- get_terms(lda100[["Gibbs"]], 50)
