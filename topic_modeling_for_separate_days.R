@@ -90,7 +90,7 @@ setwd("/scratch/qg251/webscraping_guba")
 # #
 # save(dfm_0626_0704, file = "dfm_0626_0704.RData")
 
-# load("dfm_0626_0704.RData")
+load("dfm_0626_0704.RData")
 topfeatures(dfm_0626_0704, 50)
 
 png("word_cloud_all_documents.png")
