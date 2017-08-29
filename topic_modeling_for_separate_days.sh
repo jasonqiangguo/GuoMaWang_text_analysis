@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=topicmodel
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=10
+#SBATCH --cpus-per-task=20
 #SBATCH --mem=350G
 #SBATCH --time=120:00:00
 #SBATCH --mail-type=END
