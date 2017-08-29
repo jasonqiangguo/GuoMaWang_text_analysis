@@ -94,7 +94,7 @@ load("dfm_0626_0704.RData")
 topfeatures(dfm_0626_0704, 50)
 
 png("word_cloud_all_documents.png")
-textplot_wordcloud(dfm_0626_0704, min.freq = 4000, random.order = FALSE,
+textplot_wordcloud(dfm_0626_0704, min.freq = 30000, random.order = FALSE,
                    rot.per = .25, comparison = F,
                    colors = RColorBrewer::brewer.pal(8,"Dark2"))
 dev.off()
