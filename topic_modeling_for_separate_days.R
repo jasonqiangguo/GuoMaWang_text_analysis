@@ -82,16 +82,15 @@ setwd("/scratch/qg251/webscraping_guba")
 # tks_0626_0704 <- tokens(corpus_0626_0704, what = "fastestword", remove_numbers = T,  remove_punct = T)
 # save(tks_0626_0704, file = "tks_0626_0704.RData")
 
-load("tks_0626_0704.RData")
-dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
-class(dfm_0626_0704)
-docvars(dfm_0626_0704)
+# load("tks_0626_0704.RData")
+# dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
+# class(dfm_0626_0704)
+# 
+# docvars(dfm_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
+# 
+# save(dfm_0626_0704, file = "dfm_0626_0704.RData")
 
-docvars(dfm_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
-
-save(dfm_0626_0704, file = "dfm_0626_0704.RData")
-
-# load("dfm_0626_0704.RData")
+load("dfm_0626_0704.RData")
 topfeatures(dfm_0626_0704, 20) 
 
 png("word_cloud_all_documents.png")
