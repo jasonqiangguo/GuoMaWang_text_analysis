@@ -85,6 +85,8 @@ setwd("/scratch/qg251/webscraping_guba")
 load("tks_0626_0704.RData")
 dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
 class(dfm_0626_0704)
+docvars(dfm_0626_0704)
+
 docvars(dfm_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
 
 save(dfm_0626_0704, file = "dfm_0626_0704.RData")
