@@ -5,7 +5,7 @@ rm(list=ls())
 
 # path <- "~/Dropbox/GuoMaWang/Stocks_and_regime_support"
 pkg <- c("foreign", "tm", "stm", "topicmodels", 
-         "jiebaR", "ggplot2", "dplyr", "stringr", 
+         "jiebaR", "ggplot2", "dplyr", "stringr", "quanteda",
          "reshape2", "data.table", "slam", "wordcloud")
 lapply(pkg, require, character.only = TRUE)
 
@@ -61,20 +61,29 @@ lapply(pkg, require, character.only = TRUE)
 
 
 # load corpora
-# obtain_content <- function(x){
-#   load(x)
-#   cps <- corpus
-#   cps <- tm_map(cps, removeNumbers)
-#   content <- cps[[1]]$content
-#   return(content)
-# }
+obtain_content <- function(x){
+  load(x)
+  cps <- Corpus(VectorSource(corpus))
+  cps <- tm::tm_map(cps, content_transformer(removeNumbers))
+  content <- cps[[1]]$content
+  return(content)
+}
 
-# corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
-#   "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
-# 
-# content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
-# 
-# corpus_0626_0704 <- Corpus(VectorSource(content_0626_0704))
+corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
+  "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
+
+content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
+
+corpus_0626_0704 <- corpus(content_0626_0704)
+docvars(corpus_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
+summary(corpus_0626_0704)
+
+corpus_0626_0704 <- Corpus(VectorSource(content_0626_0704))
+dfm_0626_0704 <- dfm(corpus_0626_0704, removePunct = TRUE)
+save(dfm_0626_0704, file = "/scratch/qg251/webscraping_guba/dfm_0626_0704.RData")
+dfm_trimed_0626_0704 <- trim(dfm_0626_0704, min_count = 100, min_docfreq = 4)
+save(dfm_trimed_0626_0704, file = "/scratch/qg251/webscraping_guba/dfm_trimed_0626_0704.RData")
+
 # 
 # dtm <- DocumentTermMatrix(corpus_0626_0704, control = list(weighting = weightTf, language = "cn", bounds = list(global = c(5,Inf))))
 # term_tfidf <- tapply(dtm$v/row_sums(dtm)[dtm$i], dtm$j, mean) * log2(nDocs(dtm)/col_sums(dtm > 0))
@@ -108,8 +117,8 @@ lapply(pkg, require, character.only = TRUE)
 # corpus <- Corpus(VectorSource(document))
 # dtm <- DocumentTermMatrix(corpus, control = list(weighting = weightTfIdf, language = "cn", bounds = list(global = c(2,Inf))))
 
-setwd("/scratch/qg251/webscraping_guba")
-load("dtm_0626_0704.RData")
+# setwd("/scratch/qg251/webscraping_guba")
+# load("dtm_0626_0704.RData")
 
 # run topic model, set number of topics 30
 # control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
@@ -138,15 +147,15 @@ load("dtm_0626_0704.RData")
 
 
 # run topic model, set number of topics 100
-control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
-lda100 <- list(Gibbs = LDA(dtm, 100, method = "Gibbs", control = control))
-save(lda100, file = "lda100.0626.0704.RData")
-
-topics100 <- get_terms(lda100[["Gibbs"]], 50)
-write.csv(topics100, file = "topic100_0626_0704.csv")
-
-topic_proportion_100 <- lda100[["Gibbs"]]@gamma
-write.csv(topic_proportion_100, file = "topic_proportion100_0626_0704.csv")
+# control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
+# lda100 <- list(Gibbs = LDA(dtm, 100, method = "Gibbs", control = control))
+# save(lda100, file = "lda100.0626.0704.RData")
+# 
+# topics100 <- get_terms(lda100[["Gibbs"]], 50)
+# write.csv(topics100, file = "topic100_0626_0704.csv")
+# 
+# topic_proportion_100 <- lda100[["Gibbs"]]@gamma
+# write.csv(topic_proportion_100, file = "topic_proportion100_0626_0704.csv")
 
 
 # wordclould for all these days
