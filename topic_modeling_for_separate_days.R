@@ -63,34 +63,33 @@ sessionInfo()
 
 # load corpora
 setwd("/scratch/qg251/webscraping_guba")
-# obtain_content <- function(x){
-#   load(x)
-#   cps <- Corpus(VectorSource(corpus))
-#   cps <- tm::tm_map(cps, content_transformer(removeNumbers))
-#   content <- cps[[1]]$content
-#   return(content)
-# }
-# 
-# corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
-#   "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
-# 
-# content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
-# 
-# corpus_0626_0704 <- corpus(content_0626_0704)
-# summary(corpus_0626_0704)
-# 
-# tks_0626_0704 <- tokens(corpus_0626_0704, what = "fastestword", remove_numbers = T,  remove_punct = T)
-# save(tks_0626_0704, file = "tks_0626_0704.RData")
+obtain_content <- function(x){
+  load(x)
+  cps <- Corpus(VectorSource(corpus))
+  cps <- tm::tm_map(cps, content_transformer(removeNumbers))
+  content <- cps[[1]]$content
+  return(content)
+}
+
+corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
+  "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
+
+content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
+
+corpus_0626_0704 <- corpus(content_0626_0704)
+
+tks_0626_0704 <- tokens(corpus_0626_0704, what = "fastestword", remove_numbers = T,  remove_punct = T)
+save(tks_0626_0704, file = "tks_0626_0704.RData")
 
 # load("tks_0626_0704.RData")
-# dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
+dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
 # class(dfm_0626_0704)
-# 
-# docvars(dfm_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
-# 
-# save(dfm_0626_0704, file = "dfm_0626_0704.RData")
+#
+docvars(dfm_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
+#
+save(dfm_0626_0704, file = "dfm_0626_0704.RData")
 
-load("dfm_0626_0704.RData")
+# load("dfm_0626_0704.RData")
 topfeatures(dfm_0626_0704, 20) 
 
 png("word_cloud_all_documents.png")
@@ -102,19 +101,19 @@ dev.off()
 
 dfm_trimed_100_4 <- dfm_trim(dfm_0626_0704, min_count = 100, min_docfreq = 4)
 save(dfm_trimed_100_4, file = "dfm_trimed_100_4.RData")
-load("dfm_trimed_100_4.RData")
+# load("dfm_trimed_100_4.RData")
 
 ntoken(dfm_trimed_100_4)
 
 dfm_trimed_200_4 <- dfm_trim(dfm_0626_0704, min_count = 200, min_docfreq = 4)
 save(dfm_trimed_200_4, file = "dfm_trimed_200_4.RData")
-load("dfm_trimed_200_4.RData")
+# load("dfm_trimed_200_4.RData")
 
 ntoken(dfm_trimed_200_4)
 
 dfm_trimed_500_4 <- dfm_trim(dfm_0626_0704, min_count = 500, min_docfreq = 4)
 save(dfm_trimed_500_4, file = "dfm_trimed_500_4.RData")
-load("dfm_trimed_500_4.RData")
+# load("dfm_trimed_500_4.RData")
 
 ntoken(dfm_trimed_500_4)
 
