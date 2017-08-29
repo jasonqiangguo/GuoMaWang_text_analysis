@@ -79,8 +79,10 @@ corpus_0626_0704 <- corpus(content_0626_0704)
 docvars(corpus_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
 summary(corpus_0626_0704)
 
-dfm_0626_0704 <- dfm(corpus_0626_0704, remove = stopwords("english"), stem = TRUE, removePunct = TRUE)
-save(dfm_0626_0704, file = "/scratch/qg251/webscraping_guba/dfm_0626_0704.RData")
+stopwordsPL <- readLines("stopwords.txt", encoding = "UTF-8")
+
+dfm_0626_0704 <- dfm(corpus_0626_0704, remove = stopwordsPL, stem = TRUE, removePunct = TRUE)
+save(dfm_0626_0704, file = "dfm_0626_0704.RData")
 dfm_trimed_0626_0704 <- trim(dfm_0626_0704, min_count = 100, min_docfreq = 4)
 save(dfm_trimed_0626_0704, file = "dfm_trimed_0626_0704.RData")
 
