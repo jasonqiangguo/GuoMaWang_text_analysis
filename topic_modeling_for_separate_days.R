@@ -3,7 +3,7 @@ options(digits=3)
 rm(list=ls())
 
 # path <- "~/Dropbox/GuoMaWang/Stocks_and_regime_support"
-pkg <- c("foreign", "tm", "stm", "topicmodels", 
+pkg <- c("methods", "foreign", "tm", "stm", "topicmodels", 
          "jiebaR", "ggplot2", "dplyr", "stringr", "quanteda",
          "reshape2", "data.table", "slam", "wordcloud")
 lapply(pkg, require, character.only = TRUE)
