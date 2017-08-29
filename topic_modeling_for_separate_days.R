@@ -62,7 +62,7 @@ sessionInfo()
 
 
 # load corpora
-# setwd("/scratch/qg251/webscraping_guba")
+setwd("/scratch/qg251/webscraping_guba")
 # obtain_content <- function(x){
 #   load(x)
 #   cps <- Corpus(VectorSource(corpus))
