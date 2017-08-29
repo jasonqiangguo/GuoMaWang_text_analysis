@@ -77,35 +77,44 @@ setwd("/scratch/qg251/webscraping_guba")
 # content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
 # 
 # corpus_0626_0704 <- corpus(content_0626_0704)
-# docvars(corpus_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
 # summary(corpus_0626_0704)
 # 
 # tks_0626_0704 <- tokens(corpus_0626_0704, what = "fastestword", remove_numbers = T,  remove_punct = T)
 # save(tks_0626_0704, file = "tks_0626_0704.RData")
-# 
-# dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
-# save(dfm_0626_0704, file = "dfm_0626_0704.RData")
 
-load("dfm_0626_0704.RData")
+load("tks_0626_0704.RData")
+dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
+docvars(dfm_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
+
+save(dfm_0626_0704, file = "dfm_0626_0704.RData")
+
+# load("dfm_0626_0704.RData")
 topfeatures(dfm_0626_0704, 20) 
 
-pdf("word_cloud_all_documents.pdf")
-textplot_wordcloud(dfm_0626_0704, min.freq = 1000, random.order = FALSE,
-                   rot.per = .25, comparison = F,
-                   colors = RColorBrewer::brewer.pal(8,"Dark2"))
-dev.off()
-
-
 png("word_cloud_all_documents.png")
-textplot_wordcloud(dfm_0626_0704, min.freq = 1000, random.order = FALSE,
+textplot_wordcloud(dfm_0626_0704, min.freq = 4000, random.order = FALSE,
                    rot.per = .25, comparison = F,
                    colors = RColorBrewer::brewer.pal(8,"Dark2"))
 dev.off()
 
 
-# dfm_trimed_0626_0704 <- dfm_trim(dfm_0626_0704, min_count = 100)
-# save(dfm_trimed_0626_0704, file = "dfm_trimed_0626_0704.RData")
+dfm_trimed_100_4 <- dfm_trim(dfm_0626_0704, min_count = 100, min_docfreq = 4)
+save(dfm_trimed_100_4, file = "dfm_trimed_100_4.RData")
+load("dfm_trimed_100_4.RData")
 
+ntoken(dfm_trimed_100_4)
+
+dfm_trimed_200_4 <- dfm_trim(dfm_0626_0704, min_count = 200, min_docfreq = 4)
+save(dfm_trimed_200_4, file = "dfm_trimed_200_4.RData")
+load("dfm_trimed_200_4.RData")
+
+ntoken(dfm_trimed_200_4)
+
+dfm_trimed_500_4 <- dfm_trim(dfm_0626_0704, min_count = 500, min_docfreq = 4)
+save(dfm_trimed_500_4, file = "dfm_trimed_500_4.RData")
+load("dfm_trimed_500_4.RData")
+
+ntoken(dfm_trimed_500_4)
 
 # 
 # dtm <- DocumentTermMatrix(corpus_0626_0704, control = list(weighting = weightTf, language = "cn", bounds = list(global = c(5,Inf))))
@@ -144,13 +153,19 @@ dev.off()
 # load("dtm_0626_0704.RData")
 
 # run topic model, set number of topics 30
-# control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
-# lda30 <- list(Gibbs = LDA(dtm, 30, method = "Gibbs", control = control))
-# save(lda30, file = "lda30.0626.0704.RData")
+control = list(seed = 2016, burnin = 5000, thin = 10, iter = 10000)
 
-# load("lda30.0626.0704.RData")
+lda30_100_4 <- list(Gibbs = LDA(dfm_trimed_100_4, 30, method = "Gibbs", control = control))
+save(lda30_100_4, file = "lda30_100_4.RData")
 
-# topics30 <- get_terms(lda30[["Gibbs"]], 50)
+lda30_200_4 <- list(Gibbs = LDA(dfm_trimed_200_4, 30, method = "Gibbs", control = control))
+save(lda30_200_4, file = "lda30_200_4.RData")
+
+lda30_500_4 <- list(Gibbs = LDA(dfm_trimed_500_4, 30, method = "Gibbs", control = control))
+save(lda30_500_4, file = "lda30_500_4.RData")
+
+
+# topics30_100_4 <- get_terms(lda30_100_4[["Gibbs"]], 50)
 # write.csv(topics30, file = "topic30_0626_0704.csv")
 # 
 # topic_proportion_30 <- lda30[["Gibbs"]]@gamma
@@ -158,31 +173,31 @@ dev.off()
 
 
 # run topic model, set number of topics 50
-# control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
-# lda50 <- list(Gibbs = LDA(dtm, 50, method = "Gibbs", control = control))
-# save(lda50, file = "lda50.0626.0704.RData")
-# 
-# topics50 <- get_terms(lda50[["Gibbs"]], 50)
-# write.csv(topics50, file = "topic50_0626_0704.csv")
-# 
-# topic_proportion_50 <- lda50[["Gibbs"]]@gamma
-# write.csv(topic_proportion_50, file = "topic_proportion50_0626_0704.csv")
+lda50_100_4 <- list(Gibbs = LDA(dfm_trimed_100_4, 50, method = "Gibbs", control = control))
+save(lda50_100_4, file = "lda50_100_4.RData")
+
+lda50_200_4 <- list(Gibbs = LDA(dfm_trimed_200_4, 50, method = "Gibbs", control = control))
+save(lda50_200_4, file = "lda50_200_4.RData")
+
+lda50_500_4 <- list(Gibbs = LDA(dfm_trimed_500_4, 50, method = "Gibbs", control = control))
+save(lda50_500_4, file = "lda50_500_4.RData")
 
 
 # run topic model, set number of topics 100
-# control = list(seed = 2016, burnin = 5000, thin = 10, iter = 5000)
-# lda100 <- list(Gibbs = LDA(dtm, 100, method = "Gibbs", control = control))
-# save(lda100, file = "lda100.0626.0704.RData")
-# 
-# topics100 <- get_terms(lda100[["Gibbs"]], 50)
-# write.csv(topics100, file = "topic100_0626_0704.csv")
-# 
-# topic_proportion_100 <- lda100[["Gibbs"]]@gamma
-# write.csv(topic_proportion_100, file = "topic_proportion100_0626_0704.csv")
+lda100_100_4 <- list(Gibbs = LDA(dfm_trimed_100_4, 100, method = "Gibbs", control = control))
+save(lda100_100_4, file = "lda100_100_4.RData")
+
+lda100_200_4 <- list(Gibbs = LDA(dfm_trimed_200_4, 100, method = "Gibbs", control = control))
+save(lda100_200_4, file = "lda100_200_4.RData")
+
+lda100_500_4 <- list(Gibbs = LDA(dfm_trimed_500_4, 100, method = "Gibbs", control = control))
+save(lda100_500_4, file = "lda100_500_4.RData")
 
 
 # wordclould for all these days
 # png("sample_wc.png")
 # wordcloud(corpus, scale=c(5,0.5), max.words=100, random.order=FALSE, rot.per=0.35, use.r.layout=FALSE, colors=brewer.pal(8, "Dark2"))
 # dev.off()
+
+
 
