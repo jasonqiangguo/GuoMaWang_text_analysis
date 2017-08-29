@@ -2,12 +2,13 @@ options(digits=3)
 # clean slate
 rm(list=ls())
 
-
 # path <- "~/Dropbox/GuoMaWang/Stocks_and_regime_support"
 pkg <- c("foreign", "tm", "stm", "topicmodels", 
          "jiebaR", "ggplot2", "dplyr", "stringr", "quanteda",
          "reshape2", "data.table", "slam", "wordcloud")
 lapply(pkg, require, character.only = TRUE)
+
+sessionInfo()
 
 # setwd(paste0(path, "/Text_analysis"))
 
@@ -79,12 +80,22 @@ corpus_0626_0704 <- corpus(content_0626_0704)
 docvars(corpus_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
 summary(corpus_0626_0704)
 
-stopwordsPL <- readLines("stopwords.txt", encoding = "UTF-8")
+tks_0626_0704 <- tokens(corpus_0626_0704, what = "fastestword", remove_numbers = T,  remove_punct = T)
+save(tks_0626_0704, file = "tks_0626_0704.RData")
 
-dfm_0626_0704 <- dfm(corpus_0626_0704, remove = stopwordsPL, stem = TRUE, removePunct = TRUE)
+dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
+
+topfeatures(dfm_0626_0704, 20) 
+
+# textplot_wordcloud(dfm_0626_0704, min.freq = 100, random.order = FALSE,
+#                    rot.per = .25, comparison = T, 
+#                    colors = RColorBrewer::brewer.pal(8,"Dark2"))
+
+
 save(dfm_0626_0704, file = "dfm_0626_0704.RData")
-dfm_trimed_0626_0704 <- trim(dfm_0626_0704, min_count = 100, min_docfreq = 4)
-save(dfm_trimed_0626_0704, file = "dfm_trimed_0626_0704.RData")
+# dfm_trimed_0626_0704 <- dfm_trim(dfm_0626_0704, min_count = 100)
+# 
+# save(dfm_trimed_0626_0704, file = "dfm_trimed_0626_0704.RData")
 
 # 
 # dtm <- DocumentTermMatrix(corpus_0626_0704, control = list(weighting = weightTf, language = "cn", bounds = list(global = c(5,Inf))))
