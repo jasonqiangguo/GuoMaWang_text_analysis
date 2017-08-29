@@ -61,6 +61,7 @@ lapply(pkg, require, character.only = TRUE)
 
 
 # load corpora
+setwd("/scratch/qg251/webscraping_guba")
 obtain_content <- function(x){
   load(x)
   cps <- Corpus(VectorSource(corpus))
@@ -82,7 +83,7 @@ corpus_0626_0704 <- Corpus(VectorSource(content_0626_0704))
 dfm_0626_0704 <- dfm(corpus_0626_0704, remove = stopwords("english"), stem = TRUE, removePunct = TRUE)
 save(dfm_0626_0704, file = "/scratch/qg251/webscraping_guba/dfm_0626_0704.RData")
 dfm_trimed_0626_0704 <- trim(dfm_0626_0704, min_count = 100, min_docfreq = 4)
-save(dfm_trimed_0626_0704, file = "/scratch/qg251/webscraping_guba/dfm_trimed_0626_0704.RData")
+save(dfm_trimed_0626_0704, file = "dfm_trimed_0626_0704.RData")
 
 # 
 # dtm <- DocumentTermMatrix(corpus_0626_0704, control = list(weighting = weightTf, language = "cn", bounds = list(global = c(5,Inf))))
