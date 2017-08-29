@@ -62,40 +62,50 @@ sessionInfo()
 
 
 # load corpora
-setwd("/scratch/qg251/webscraping_guba")
-obtain_content <- function(x){
-  load(x)
-  cps <- Corpus(VectorSource(corpus))
-  cps <- tm::tm_map(cps, content_transformer(removeNumbers))
-  content <- cps[[1]]$content
-  return(content)
-}
+# setwd("/scratch/qg251/webscraping_guba")
+# obtain_content <- function(x){
+#   load(x)
+#   cps <- Corpus(VectorSource(corpus))
+#   cps <- tm::tm_map(cps, content_transformer(removeNumbers))
+#   content <- cps[[1]]$content
+#   return(content)
+# }
+# 
+# corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
+#   "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
+# 
+# content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
+# 
+# corpus_0626_0704 <- corpus(content_0626_0704)
+# docvars(corpus_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
+# summary(corpus_0626_0704)
+# 
+# tks_0626_0704 <- tokens(corpus_0626_0704, what = "fastestword", remove_numbers = T,  remove_punct = T)
+# save(tks_0626_0704, file = "tks_0626_0704.RData")
+# 
+# dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
+# save(dfm_0626_0704, file = "dfm_0626_0704.RData")
 
-corpora_name <- c("corpus_0626.RData", "corpus_0627.RData", "corpus_0628.RData", "corpus_0629.RData", "corpus_0630.RData",
-  "corpus_0701.RData", "corpus_0702.RData", "corpus_0703.RData", "corpus_0704.RData")
-
-content_0626_0704 <- unlist(lapply(corpora_name, obtain_content))
-
-corpus_0626_0704 <- corpus(content_0626_0704)
-docvars(corpus_0626_0704, "Date") <- seq(as.Date("2015/06/26"), as.Date("2015/07/04"), "day")
-summary(corpus_0626_0704)
-
-tks_0626_0704 <- tokens(corpus_0626_0704, what = "fastestword", remove_numbers = T,  remove_punct = T)
-save(tks_0626_0704, file = "tks_0626_0704.RData")
-
-dfm_0626_0704 <- dfm(tks_0626_0704, stem = TRUE)
-
+load("dfm_0626_0704.RData")
 topfeatures(dfm_0626_0704, 20) 
 
-# textplot_wordcloud(dfm_0626_0704, min.freq = 100, random.order = FALSE,
-#                    rot.per = .25, comparison = T, 
-#                    colors = RColorBrewer::brewer.pal(8,"Dark2"))
+pdf("word_cloud_all_documents.pdf")
+textplot_wordcloud(dfm_0626_0704, min.freq = 1000, random.order = FALSE,
+                   rot.per = .25, comparison = F,
+                   colors = RColorBrewer::brewer.pal(8,"Dark2"))
+dev.off()
 
 
-save(dfm_0626_0704, file = "dfm_0626_0704.RData")
+png("word_cloud_all_documents.png")
+textplot_wordcloud(dfm_0626_0704, min.freq = 1000, random.order = FALSE,
+                   rot.per = .25, comparison = F,
+                   colors = RColorBrewer::brewer.pal(8,"Dark2"))
+dev.off()
+
+
 # dfm_trimed_0626_0704 <- dfm_trim(dfm_0626_0704, min_count = 100)
-# 
 # save(dfm_trimed_0626_0704, file = "dfm_trimed_0626_0704.RData")
+
 
 # 
 # dtm <- DocumentTermMatrix(corpus_0626_0704, control = list(weighting = weightTf, language = "cn", bounds = list(global = c(5,Inf))))
